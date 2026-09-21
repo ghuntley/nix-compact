@@ -1,0 +1,14 @@
+@cc [owner:ghuntley,label:build] pinned-source-inputs
+Production packages and test tooling MUST use immutable locked sources and
+hash-verified dependencies. Dependency installation MUST NOT be described as
+proof of runtime behavior. Unsupported Nix versions MUST fail explicitly.
+
+@cc [owner:ghuntley,label:verification] native-behavior-evidence
+Tests MUST exercise the actual C++ implementation. Claims about Nix execution
+MUST use the real patched CLI; passing core tests alone MUST NOT establish daemon,
+remote-protocol, TTY, signal or NixOS integration behavior.
+
+@cc [owner:ghuntley,label:integration] independent-flake-consumption
+The default package and exported modules MUST be consumable without any original
+monorepo checkout. The NixOS module MUST require explicit enablement. Package
+factories MUST validate their supported Nix version before patching.

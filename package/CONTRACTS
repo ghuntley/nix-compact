@@ -1,0 +1,47 @@
+@cc [owner:ghuntley,label:build] compact-presentation-only
+Diagnostic classification MUST NOT modify build results, exit status, scheduling,
+cancellation or state in another invocation. Completion MUST use the actual Nix
+process result, never a word match or application severity.
+
+@cc [owner:ghuntley,label:logging] compact-capture-before-filter
+Every received diagnostic and builder line MUST be archived before console
+filtering. The archive MUST preserve original payload bytes, stable physical-line
+identifiers and available activity identity. Capture failure MUST be announced and
+restore visible logging; a session without a completion record is incomplete.
+
+@cc [owner:ghuntley,label:capacity] compact-output-budgets
+Automatic diagnostic output MUST be bounded to 12 KiB per invocation and 4 KiB
+per excerpt, with at most 20 preceding and 20 following lines per build activity.
+For a terminal builder failure without an earlier detected error, the excerpt
+MAY instead include its last 40 lines within the same byte limit.
+Completion has a separate 2 KiB allowance. Progress MUST be at most 160 bytes per
+15 seconds. Overlapping context MUST NOT be reprinted. Saved logs retain omitted
+output; reaching a presentation budget MUST NOT stop the build.
+
+@cc [owner:ghuntley,label:logging] compact-structured-precedence
+Recognized structured severity MUST take precedence over words in its payload.
+Elixir severity, Rust tracing level and Cargo compiler-message message.level MUST
+be interpreted through their respective schemas. Text matches are candidates,
+never assertions that a build failed. Malformed input MUST NOT stop the build.
+
+@cc [owner:ghuntley,label:security] compact-private-evidence
+Session logs MUST be private to the invoking user and MUST NOT be automatically
+exported to remote logging services. Session metadata MUST NOT record command
+arguments or environment values. Existing producer-side diagnostic sanitization
+MUST remain effective. Retention MUST NOT delete active sessions.
+
+@cc [owner:ghuntley,label:compatibility] compact-cli-compatibility
+Machine-readable stdout, explicit log formats and an explicit full-output mode
+MUST retain their existing semantics. The implementation MUST be compiled into
+the pinned Nix executable, not substituted by a shell or subprocess wrapper.
+
+@cc [owner:ghuntley,label:capacity] compact-bounded-reader
+The log reader MUST default to at most 100 lines and 8 KiB, preserve original
+line identifiers under filters, and identify the first unreturned record when
+truncated. Complete output requires explicit selection. An index is optional and
+MUST NOT be required to recover records from an intact archive.
+
+@cc [owner:ghuntley,label:logging] compact-confidence-priority
+Low-confidence word matches and their context MUST consume at most 4 KiB of the
+12 KiB diagnostic budget, leaving capacity for structured, recognized textual
+and native errors. Classification priority MUST NOT affect archival capture.
