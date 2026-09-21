@@ -136,7 +136,7 @@ nix develop
 ```
 
 ```sh
-nix flake check --no-build
+nix flake check --no-build --option allow-import-from-derivation false
 nix build --no-link .#default .#checks.x86_64-linux.core \
   .#checks.x86_64-linux.native .#checks.x86_64-linux.native-development \
   .#checks.x86_64-linux.configuration
