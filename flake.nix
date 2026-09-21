@@ -3,11 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/c3eea5b2156db11c7eeeada3dc737711255b253e";
-    nixpkgs-dev.url = "github:cachix/devenv-nixpkgs/256551e45f6303e142ab4a98be1bf243feb77dc0";
-    nixpkgs-dev.inputs.nixpkgs-src = {
-      url = "github:NixOS/nixpkgs/c8f90650c15282fa8656a041bfbbd2403997a9a7";
-      flake = false;
-    };
+    nixpkgs-dev.url = "github:NixOS/nixpkgs/c8f90650c15282fa8656a041bfbbd2403997a9a7";
   };
 
   outputs = { self, nixpkgs, nixpkgs-dev }:

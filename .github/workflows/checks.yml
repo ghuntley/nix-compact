@@ -22,7 +22,7 @@ jobs:
             sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
           fi
       - name: Evaluate public flake outputs
-        run: nix flake check --no-build
+        run: nix flake check --no-build --option allow-import-from-derivation false
       - name: Build package and run Hegel/native checks
         run: >-
           nix build --no-link --print-build-logs

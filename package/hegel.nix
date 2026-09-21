@@ -13,7 +13,9 @@ pkgs.rustPlatform.buildRustPackage {
   pname = "nix-compact-hegel";
   version = "0.43.1-9a130bf";
   src = source;
-  cargoLock.lockFile = "${source}/Cargo.lock";
+  # Keep evaluation independent of source realization on cold stores. Cargo
+  # vendoring uses the upstream lockfile during the fixed-output fetch instead.
+  cargoHash = "sha256-cB7yqgF9eG71U6FA8SnARvVDErMNW/AamXLf6y3hq9o=";
   cargoBuildFlags = [ "-p" "hegeltest-c" ];
   cargoTestFlags = [ "-p" "hegeltest-c" ];
   postInstall = ''

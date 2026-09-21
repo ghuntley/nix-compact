@@ -32,6 +32,10 @@ The exported NixOS module is opt-in and uses `programs.nix-compact`; its package
 does not follow the host's potentially incompatible Nix version. `lib.mkPackage`
 is available when a consumer deliberately wants its own compatible package set.
 The version/platform assertions and exact source substitutions fail on drift.
+Both flake package inputs are direct immutable Nixpkgs snapshots. Flake evaluation
+works with import-from-derivation disabled, including on a cold store. Hegel's
+Cargo dependencies are hash-vendored during fetching rather than reading a
+lockfile from an unrealized derivation during evaluation.
 
 Only the CLI component is patched. Store and daemon libraries remain upstream.
 The package keeps upstream test gates, with raw logging selected for upstream
