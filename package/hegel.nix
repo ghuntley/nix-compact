@@ -20,5 +20,8 @@ pkgs.rustPlatform.buildRustPackage {
   cargoTestFlags = [ "-p" "hegeltest-c" ];
   postInstall = ''
     install -Dm644 hegel-c/include/hegel.h $out/include/hegel.h
+  '' + pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
+    # Cargo records the build-directory path as the dylib install name.
+    install_name_tool -id $out/lib/libhegel_c.dylib $out/lib/libhegel_c.dylib
   '';
 }

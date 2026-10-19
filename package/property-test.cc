@@ -8,7 +8,11 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 #include <csignal>
+#if defined(__APPLE__)
+#include <util.h>
+#else
 #include <pty.h>
+#endif
 
 using namespace nix::compact;
 
@@ -594,8 +598,12 @@ static void runtimeChecks(const std::filesystem::path & directory)
 
     // Both SSH stores bypass transport for localhost but execute the actual
     // daemon/serve protocols in child processes, independently of local capture.
+    // The fixture needs a static builder inside a chroot store, which only
+    // Linux provides; other platforms leave the protocols unverified.
     auto bin = std::filesystem::path(binary).parent_path();
-    for (const std::string protocol : {"ssh-ng", "ssh"}) {
+    if (!std::getenv("NIX_COMPACT_TEST_BUSYBOX"))
+        std::cout << "remote-protocol capture skipped: no chroot-store builder on this platform\n";
+    else for (const std::string protocol : {"ssh-ng", "ssh"}) {
         auto program = (bin / (protocol == "ssh-ng" ? "nix-daemon" : "nix-store")).string();
         auto remoteRoot = std::filesystem::absolute(directory / ("remote-" + protocol));
         auto url = protocol + "://localhost?remote-program=" + program + "&remote-store=" + remoteRoot.string();
@@ -656,7 +664,8 @@ static void runtimeChecks(const std::filesystem::path & directory)
     auto rawInterrupted = execute({binary, "build", "--no-link", "--expr", interruptedSource}, directory,
         false, {}, "", readyFile);
     require(rawInterrupted.status == interrupted.status, "compact capture must preserve upstream SIGINT exit semantics");
-    std::cout << "native runtime: JSON, paths, TTY, indexed reader, full streaming, capture fallback, evaluation, Unix daemon, remote protocols, heartbeat and SIGINT passed\n";
+    std::cout << "native runtime: JSON, paths, TTY, indexed reader, full streaming, capture fallback, evaluation, Unix daemon, "
+              << (std::getenv("NIX_COMPACT_TEST_BUSYBOX") ? "remote protocols, " : "") << "heartbeat and SIGINT passed\n";
 }
 
 static bool run(const char * name, Property property, const std::filesystem::path & directory, uint64_t examples = 200)

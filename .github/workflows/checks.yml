@@ -33,3 +33,21 @@ jobs:
           .#checks.x86_64-linux.configuration
       - name: Verify development shell
         run: nix develop --command nix build-log --help
+  darwin:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build package and run Hegel/native checks
+        run: >-
+          nix build --no-link --print-build-logs
+          .#default
+          .#checks.aarch64-darwin.core
+          .#checks.aarch64-darwin.native
+          .#checks.aarch64-darwin.native-development
+      - name: Verify development shell
+        run: nix develop --command nix build-log --help

@@ -15,6 +15,8 @@ nix flake check --no-build --option allow-import-from-derivation false
 nix build --no-link .#checks.x86_64-linux.core \
   .#checks.x86_64-linux.native .#checks.x86_64-linux.native-development \
   .#checks.x86_64-linux.configuration .#default
+nix build --no-link .#checks.aarch64-darwin.core \
+  .#checks.aarch64-darwin.native .#checks.aarch64-darwin.native-development
 git diff --check
 ```
 

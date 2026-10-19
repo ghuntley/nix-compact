@@ -18,6 +18,7 @@ in {
     NIX_COMPACT_TEST_BASH = "${pkgs.bash}/bin/bash";
     NIX_COMPACT_TEST_SYSTEM = pkgs.stdenv.hostPlatform.system;
     NIX_COMPACT_TEST_SLEEP = "${pkgs.coreutils}/bin/sleep";
+  } // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     NIX_COMPACT_TEST_BUSYBOX = "${pkgs.pkgsStatic.busybox}/bin/busybox";
   };
 }

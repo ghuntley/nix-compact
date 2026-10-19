@@ -133,8 +133,8 @@ cleanup after investigation. Indexes are removed with their completed archive.
 ## Package selection
 
 - `devenv shell` selects the custom Nix through `devenv.nix`.
-- `packages.x86_64-linux.default` and `.nix-compact` expose the pinned package.
-- `apps.x86_64-linux.default` runs its `nix` executable.
+- `packages.<system>.default` and `.nix-compact` expose the pinned package.
+- `apps.<system>.default` runs its `nix` executable.
 - `nixosModules.default` selects the package through `nix.package` when
   `programs.nix-compact.enable = true`. An explicit `nix.package` definition
   takes priority. `programs.nix-compact.package` permits a custom package.
@@ -156,6 +156,7 @@ nix build .#checks.x86_64-linux.core
 nix build .#checks.x86_64-linux.native
 nix build .#checks.x86_64-linux.native-development
 nix build .#checks.x86_64-linux.configuration
+# aarch64-darwin: core, native and native-development (remote-protocol fixture skipped)
 ```
 
 The C++ properties call the pinned Hegel native C ABI directly. Building that

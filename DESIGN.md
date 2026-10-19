@@ -54,7 +54,8 @@ devenv does not retain a stale CLI after header-only changes.
   pagination and retention, plus operational edge fixtures.
 - Native tests: the same core properties plus 50 generated real-build cases per
   package variant and runtime checks for JSON/paths, TTY, explicit formats, archive
-  failure, native errors, Unix daemon, remote protocols, heartbeat and SIGINT.
+  failure, native errors, Unix daemon, remote protocols (Linux only; the fixture
+  needs a chroot store), heartbeat and SIGINT.
 - Configuration checks: opt-in, selected native CLI, unchanged store library,
   disabled behavior and explicit package overrides.
 - Consumer checks: flake app/package/module evaluation and actual development

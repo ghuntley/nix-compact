@@ -83,25 +83,29 @@ In `devenv.nix`:
 ```
 
 Commit `devenv.lock` to pin the dependency. Alternatively add
-`inputs.nix-compact.packages.x86_64-linux.default` to your shell's packages.
+`inputs.nix-compact.packages.${system}.default` to your shell's packages.
 
 ### Public outputs
 
 | Output | Purpose |
 | --- | --- |
-| `packages.x86_64-linux.default` / `.nix-compact` | Complete patched Nix package |
-| `apps.x86_64-linux.default` | Patched `nix` executable |
-| `devShells.x86_64-linux.default` | Contributor toolchain and native test environment |
+| `packages.<system>.default` / `.nix-compact` | Complete patched Nix package |
+| `apps.<system>.default` | Patched `nix` executable |
+| `devShells.<system>.default` | Contributor toolchain and native test environment |
 | `nixosModules.default` | Opt-in NixOS module |
 | `devenvModules.default` | Add the pinned package to devenv |
 | `lib.mkPackage { pkgs; }` | Build with an explicitly supplied compatible package set |
 | `lib.mkCoreCheck { pkgs; }` | Core C++/Hegel check factory |
 | `lib.mkNativeCheck { pkgs; package ? …; }` | Real CLI/runtime check factory |
-| `checks.x86_64-linux.*` | `core`, `native`, `native-development`, `configuration` |
+| `checks.<system>.*` | `core`, `native`, `native-development`; `configuration` on `x86_64-linux` |
 
-**Supported:** Nix 2.34.8, `x86_64-linux`. Unsupported versions/platforms fail
-explicitly. The native suite is exercised against both stable NixOS and
-development package inputs. Other platforms are not advertised as supported.
+**Supported:** Nix 2.34.8 (including Nixpkgs `+N` downstream patch releases) on
+`x86_64-linux` and `aarch64-darwin`, as listed in `systems.nix`. Unsupported
+versions/platforms fail explicitly. The native suite is exercised against both
+stable and development package inputs on each platform. On `aarch64-darwin` the
+SSH remote-protocol fixture is skipped because it needs a Linux chroot store, so
+remote-protocol capture is verified on Linux only. Other platforms are not
+advertised as supported.
 
 ## Bounds and compatibility
 
@@ -140,6 +144,9 @@ nix flake check --no-build --option allow-import-from-derivation false
 nix build --no-link .#default .#checks.x86_64-linux.core \
   .#checks.x86_64-linux.native .#checks.x86_64-linux.native-development \
   .#checks.x86_64-linux.configuration
+# on macOS
+nix build --no-link .#default .#checks.aarch64-darwin.core \
+  .#checks.aarch64-darwin.native .#checks.aarch64-darwin.native-development
 ```
 
 Hegel's native C ABI tests the actual C++: 1,000 generated core cases and 50
