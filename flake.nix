@@ -2,8 +2,8 @@
   description = "Native compact Nix build logs for humans and coding agents";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/c3eea5b2156db11c7eeeada3dc737711255b253e";
-    nixpkgs-dev.url = "github:NixOS/nixpkgs/c8f90650c15282fa8656a041bfbbd2403997a9a7";
+    nixpkgs.url = "github:NixOS/nixpkgs/da6dc0e7b26060f2f71ce3ef7088fb56ee44fa36";
+    nixpkgs-dev.url = "github:NixOS/nixpkgs/02c087f3fe673c9e317f206a627cb6b910336dbe";
   };
 
   outputs = { self, nixpkgs, nixpkgs-dev }:
@@ -15,7 +15,7 @@
         else throw "nix-compact supports ${builtins.concatStringsSep ", " systems}; requested ${target}";
     in {
       lib = {
-        supportedNixVersion = "2.34.8";
+        supportedNixVersion = "2.34.9";
         supportedSystems = systems;
         mkPackage = import ./package;
         mkCoreCheck = import ./package/core-check.nix;

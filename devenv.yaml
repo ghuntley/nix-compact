@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://devenv.sh/devenv.schema.json
 inputs:
   nixpkgs:
-    url: github:NixOS/nixpkgs/c3eea5b2156db11c7eeeada3dc737711255b253e
+    url: github:NixOS/nixpkgs/da6dc0e7b26060f2f71ce3ef7088fb56ee44fa36
   devenv:
-    url: github:cachix/devenv/6e830506b517d6a373f2dec6ee8c7f4683908856?dir=src/modules
+    url: github:cachix/devenv/d9f86dc6fe4cb74c0f9377e5535acc0cdacee721?dir=src/modules

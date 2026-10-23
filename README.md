@@ -99,7 +99,7 @@ Commit `devenv.lock` to pin the dependency. Alternatively add
 | `lib.mkNativeCheck { pkgs; package ? …; }` | Real CLI/runtime check factory |
 | `checks.<system>.*` | `core`, `native`, `native-development`; `configuration` on `x86_64-linux` |
 
-**Supported:** Nix 2.34.8 (including Nixpkgs `+N` downstream patch releases) on
+**Supported:** Nix 2.34.9 (including Nixpkgs `+N` downstream patch releases) on
 `x86_64-linux` and `aarch64-darwin`, as listed in `systems.nix`. Unsupported
 versions/platforms fail explicitly. The native suite is exercised against both
 stable and development package inputs on each platform. On `aarch64-darwin` the

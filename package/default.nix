@@ -2,8 +2,8 @@
 assert pkgs.lib.assertMsg (builtins.elem pkgs.stdenv.hostPlatform.system (import ../systems.nix))
   "nix-compact supports ${builtins.concatStringsSep ", " (import ../systems.nix)}; requested ${pkgs.stdenv.hostPlatform.system}";
 # Nixpkgs marks platform-specific downstream patches with a `+N` suffix.
-assert pkgs.lib.assertMsg (builtins.head (builtins.split "\\+" pkgs.nix.version) == "2.34.8")
-  "nix-compact supports Nix 2.34.8; use its pinned flake package or a compatible package set";
+assert pkgs.lib.assertMsg (builtins.head (builtins.split "\\+" pkgs.nix.version) == "2.34.9")
+  "nix-compact supports Nix 2.34.9; use its pinned flake package or a compatible package set";
 let
   # Devenv's evaluation cache tracks readFile dependencies. Force a read as well
   # as copying the path so editing a header invalidates a cached shell selection.

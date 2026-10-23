@@ -1,6 +1,6 @@
 # Compact Nix build logs
 
-The development shell and optional NixOS module use a source-patched Nix 2.34.8.
+The development shell and optional NixOS module use a source-patched Nix 2.34.9.
 Ordinary `nix build` saves received logs locally and shows a compact transcript.
 This is implemented inside Nix's CLI, not by a shell alias or subprocess wrapper.
 
@@ -143,7 +143,7 @@ cleanup after investigation. Indexes are removed with their completed archive.
   takes priority. `programs.nix-compact.package` permits a custom package.
 - `devenvModules.default` adds the pinned package to a consuming devenv shell.
 - `lib.mkPackage { pkgs = compatiblePkgs; }` builds against a supplied package set
-  containing Nix 2.34.8. The other public factories are `lib.mkCoreCheck` and
+  containing Nix 2.34.9. The other public factories are `lib.mkCoreCheck` and
   `lib.mkNativeCheck`, each accepting `pkgs`; the native check optionally accepts
   an explicit `package` too.
 
