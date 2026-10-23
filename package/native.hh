@@ -108,10 +108,15 @@ public:
 inline void start()
 {
     std::filesystem::path directory;
+    std::error_code missingHome;
     if (auto value = getEnv("NIX_BUILD_LOG_DIR")) directory = *value;
     else if (auto state = getEnv("XDG_STATE_HOME"); state && std::filesystem::path(*state).is_absolute())
         directory = std::filesystem::path(*state) / "nix/build-logs";
-    else if (auto home = getEnv("HOME")) directory = std::filesystem::path(*home) / ".local/state/nix/build-logs";
+    // Nix builders set HOME to a nonexistent path such as /homeless-shelter;
+    // creating it would break the purity check of later unsandboxed builds.
+    else if (auto home = getEnv("HOME"); home && std::filesystem::path(*home).is_absolute()
+             && std::filesystem::is_directory(*home, missingHome))
+        directory = std::filesystem::path(*home) / ".local/state/nix/build-logs";
     else {
         writeToStderr("[nix] No build-log directory available; retaining visible output.\n");
         settings.verboseBuild = true;

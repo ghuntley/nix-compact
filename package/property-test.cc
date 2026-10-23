@@ -390,6 +390,9 @@ static std::string environment(const char * key)
     return value;
 }
 
+// An override with this value removes the variable from the child environment.
+static const std::string unsetVariable{"\0unset", 6};
+
 static ProcessResult execute(const std::vector<std::string> & arguments, const std::filesystem::path & directory,
                              bool compact = true, const std::map<std::string, std::string> & overrides = {},
                              std::string_view capture = "", const std::filesystem::path & interruptReady = {}, bool tty = false)
@@ -428,7 +431,9 @@ static ProcessResult execute(const std::vector<std::string> & arguments, const s
         set("NIX_PATH", "");
         set("NIX_COMPACT_LOG", compact ? "1" : "0");
         set("NIX_CONFIG", "experimental-features = nix-command flakes\nsandbox = false\nbuild-users-group =\nsubstituters =\nflake-registry =\n");
-        for (const auto & [key, value] : overrides) set(key.c_str(), value);
+        for (const auto & [key, value] : overrides)
+            if (value == unsetVariable) ::unsetenv(key.c_str());
+            else set(key.c_str(), value);
         std::vector<char *> argv;
         for (const auto & argument : arguments) argv.push_back(const_cast<char *>(argument.c_str()));
         argv.push_back(nullptr);
@@ -587,6 +592,12 @@ static void runtimeChecks(const std::filesystem::path & directory)
         {{"NIX_BUILD_LOG_DIR", "/dev/null/not-a-directory"}});
     require(fallback.status == 0 && fallback.error.find("capture failed") != std::string::npos
         && fallback.error.find("ordinary line 9999") != std::string::npos, "capture failure must visibly restore build output");
+    auto homeless = directory / "native" / "homeless-shelter";
+    auto builderHome = execute({binary, "build", "--no-link", "--rebuild", "--expr", source}, directory, true,
+        {{"NIX_BUILD_LOG_DIR", unsetVariable}, {"XDG_STATE_HOME", unsetVariable}, {"HOME", homeless.string()}});
+    require(builderHome.status == 0 && builderHome.error.find("No build-log directory available") != std::string::npos
+        && builderHome.error.find("ordinary line 9999") != std::string::npos && !std::filesystem::exists(homeless),
+        "a nonexistent HOME must retain visible output without creating it");
 
     auto evaluation = execute({binary, "build", "--no-link", "--expr", "throw \"evaluation fixture\""}, directory);
     auto evalArchive = records(advertisedLog(evaluation));

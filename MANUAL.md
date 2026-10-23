@@ -106,7 +106,10 @@ noninteractive builds receive the same bounded compact presentation.
 
 Default location: `${XDG_STATE_HOME:-$HOME/.local/state}/nix/build-logs/`.
 An absolute `XDG_STATE_HOME` is required; otherwise the home-directory default
-is used. Override the directory with `NIX_BUILD_LOG_DIR`.
+is used, but only when `HOME` is an existing absolute directory. A nonexistent
+`HOME`, such as Nix's `/homeless-shelter` inside builders, is never created; that
+invocation retains visible output instead. Override the directory with
+`NIX_BUILD_LOG_DIR`.
 
 - Directories are private (`0700`); session/index files are `0600`.
 - Each invocation creates a unique JSONL archive and an optional sparse index.
